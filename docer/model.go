@@ -1,5 +1,10 @@
 package docer
 
+import (
+	"fmt"
+	"strings"
+)
+
 type Field struct {
 	Name     string `json:"name"`
 	Type     string `json:"type"`
@@ -24,4 +29,40 @@ type Model struct {
 
 type Example struct {
 	Type uint8 `doc:"required;this is field comment;option:1,2,3"`
+}
+
+func (m *Model) exampleJSON(prefix string) string {
+	var fields []string
+	for _, field := range m.Fields {
+		var text = fmt.Sprintf("\"%s\": ", field.Name)
+		switch strings.TrimLeft(field.Type, "[]") {
+		case "string":
+			text = text + "\"\""
+		case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64", "float64", "float32":
+			text = text + "0"
+		case "bool":
+			text = text + "false"
+		default:
+			if field.Sub != nil {
+				text = text + field.Sub.exampleJSON(prefix+"\t")
+			} else {
+				text = text + "{}"
+			}
+		}
+
+		var wrap = text
+		if n := strings.Count(field.Type, "[]"); n > 0 {
+			wrap = strings.Repeat("[", n) + wrap + strings.Repeat("]", n)
+		}
+		fields = append(fields, prefix+text)
+	}
+	if m.Array {
+		return "[\n" + strings.Join(fields, ",\n") + "\n]"
+	} else {
+		return "{\n" + strings.Join(fields, ",\n") + "\n}"
+	}
+}
+
+func (m *Model) ExampleJSON() string {
+	return m.exampleJSON("")
 }

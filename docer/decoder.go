@@ -129,3 +129,7 @@ func realType(v reflect.Type, i int) (reflect.Type, int) {
 		return v, i
 	}
 }
+
+func Decode(v interface{}) *Model {
+	return newDecoder(tree{}).decode(v)
+}
