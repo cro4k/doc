@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/cro4k/doc/docer"
+	"github.com/cro4k/doc/export/markdown"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -21,10 +20,13 @@ func main() {
 	group := eng.Group("/api")
 	group.POST("/hello", Hello)
 
-	b, _ := json.MarshalIndent(eng.Docs().Decode().Group(), "", "  ")
-	fmt.Println(string(b))
+	//b, _ := json.MarshalIndent(eng.Docs().Decode().Group(), "", "  ")
+	//fmt.Println(string(b))
 
 	//http.ListenAndServe(":8080", eng)
+
+	err := markdown.Export("./boom/view", eng.Docs().Decode().Group(), true)
+	log.Println(err)
 }
 
 var (
@@ -35,7 +37,7 @@ var (
 			"备注": "",
 		},
 		Handler: hello,
-		Group:   "group name/sub group name",
+		Group:   "",
 	}
 
 	Version = &docer.Doc{
@@ -46,6 +48,7 @@ var (
 				"version": "v0.0.1",
 			})
 		},
+		Group: "demo",
 	}
 )
 

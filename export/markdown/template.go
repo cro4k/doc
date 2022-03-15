@@ -3,8 +3,6 @@ package markdown
 import "text/template"
 
 var markdownTemplate = "## {{.Name}}\n\n" +
-	"### 说明 \n" +
-	"> 请求/响应中的子模型请参阅末尾模型列表\n\n" +
 	"### 请求地址\n" +
 	"> {{.API}}\n\n" +
 	"### 请求方式\n" +
@@ -38,59 +36,76 @@ var markdownTemplate = "## {{.Name}}\n\n" +
 	"{{ end}}\n" +
 	"本文档由 [doc](https://github.com/cro4k/doc) 自动生成"
 
-var htmlTemplate = "<!doctype html>" +
-	"<html lang='zh'>" +
-	"<head>" +
-	"    <meta charset='utf-8'/>" +
-	"    <title>Marked in the browser</title>" +
-	"    <style>" +
-	"        table {" +
-	"            border-style: none none solid solid;" +
-	"            border-color: #aaa;" +
-	"            border-width: 1px;" +
-	"            margin-top: 20px;" +
-	"            border-spacing: 0;" +
-	"        }" +
-	"        table th {" +
-	"            border-style: solid solid none none;" +
-	"            border-color: #aaa;" +
-	"            border-width: 1px;" +
-	"            margin-top: 10px;" +
-	"            padding: 5px 10px 5px 10px;" +
-	"        }" +
-	"        table td {" +
-	"            border-style: solid solid none none;" +
-	"            border-color: #aaa;" +
-	"            border-width: 1px;" +
-	"            margin-top: 10px;" +
-	"            padding: 5px 10px 5px 10px;" +
-	"        }" +
-	"        blockquote {" +
-	"            display: block;" +
-	"            margin-block-start: 1em;" +
-	"            margin-block-end: 1em;" +
-	"            margin-inline-start: 10px;" +
-	"            margin-inline-end: 30px;" +
-	"        }" +
-	"        blockquote p {" +
-	"            border-style: none none none solid;" +
-	"            padding: 5px 10px 5px 10px;" +
-	"            border-color: #479393;" +
-	"            background-color: #47939333;" +
-	"        }" +
-	"        #content{" +
-	"            margin-left: 20px;" +
-	"        }" +
-	"    </style>" +
-	"</head>" +
-	"<body>" +
-	"<div id='content'></div>" +
-	"<script src='https://cdn.jsdelivr.net/npm/marked/marked.min.js'></script>" +
-	"<script>" +
-	"    document.getElementById('content').innerHTML = marked.parse('{{.MD}}');" +
-	"</script>" +
-	"</body>" +
-	"</html>"
+var htmlTemplate = "<!doctype html>\n" +
+	"<html lang='zh'>\n" +
+	"<head>\n" +
+	"    <meta charset='utf-8'/>\n" +
+	"    <title>Docer</title>\n" +
+	"    <style>\n" +
+	"        table {\n" +
+	"            border-style: none none solid solid;\n" +
+	"            border-color: #aaa;\n" +
+	"            border-width: 1px;\n" +
+	"            margin-top: 20px;\n" +
+	"            border-spacing: 0;\n" +
+	"        }\n" +
+	"        table th {\n" +
+	"            border-style: solid solid none none;\n" +
+	"            border-color: #aaa;\n" +
+	"            border-width: 1px;\n" +
+	"            margin-top: 10px;\n" +
+	"            padding: 5px 10px 5px 10px;\n" +
+	"        }\n" +
+	"        table td {\n" +
+	"            border-style: solid solid none none;\n" +
+	"            border-color: #aaa;\n" +
+	"            border-width: 1px;\n" +
+	"            margin-top: 10px;\n" +
+	"            padding: 5px 10px 5px 10px;\n" +
+	"        }\n" +
+	"        blockquote {\n" +
+	"            display: block;\n" +
+	"            margin-block-start: 1em;\n" +
+	"            margin-block-end: 1em;\n" +
+	"            margin-inline-start: 10px;\n" +
+	"            margin-inline-end: 30px;\n" +
+	"        }\n" +
+	"        blockquote p {\n" +
+	"            border-style: none none none solid;\n" +
+	"            padding: 5px 10px 5px 10px;\n" +
+	"            border-color: #479393;\n" +
+	"            background-color: #47939333;\n" +
+	"        }\n" +
+	"        #content{\n" +
+	"            margin-left: 20px;\n" +
+	"        }\n" +
+	"    </style>\n" +
+	"</head>\n" +
+	"<body>\n" +
+	"<div id='content'></div>\n" +
+	"<script src='https://cdn.jsdelivr.net/npm/marked/marked.min.js'></script>\n" +
+	"<script>\n" +
+	"    var data = '{{.MD}}'\n" +
+	"    document.getElementById('content').innerHTML = marked.parse(data);\n" +
+	"</script>\n" +
+	"</body>\n" +
+	"</html>\n"
+
+var indexTemplate = "<!DOCTYPE html>\n" +
+	"<html lang='zh'>\n" +
+	"<head>\n" +
+	"    <meta charset='UTF-8'>\n" +
+	"    <title>Title</title>\n" +
+	"</head>\n" +
+	"<body>\n" +
+	"    <ul>\n" +
+	"{{ range $k,$v := .routers }}" +
+	"        <li> <a href='{{.link}}'>{{.name}}</a> </li>\n" +
+	"{{ end }}" +
+	"    </ul>\n" +
+	"</body>\n" +
+	"</html>\n"
 
 var md, _ = template.New("markdown").Parse(markdownTemplate)
 var html, _ = template.New("html").Parse(htmlTemplate)
+var index, _ = template.New("index").Parse(indexTemplate)

@@ -60,36 +60,76 @@ func HTML(w io.Writer, doc *docer.Document, path string) error {
 	if err != nil {
 		return err
 	}
+
+	data := string(b.Bytes())
+	data = strings.ReplaceAll(data, "\n", "\\n")
+	data = strings.ReplaceAll(data, "\t", "\\t")
 	return html.Execute(w, HTMLData{
-		MD:   string(b.Bytes()),
+		MD:   data,
 		Path: path,
 	})
 }
 
 func Export(root string, docs *docer.DocumentGroup, toHtml ...bool) error {
-	return export(root+"/"+docs.Name, docs, toHtml...)
+	//os.RemoveAll(root)
+	if err := export(root+"/"+docs.Name, docs, toHtml...); err != nil {
+		return err
+	}
+	return nil
 }
 
 func export(path string, group *docer.DocumentGroup, toHtml ...bool) error {
 	path = strings.TrimRight(path, "/")
+	if path == "" {
+		path = "."
+	}
 
+	var routers []map[string]interface{}
 	os.MkdirAll(path, 0777)
-	for _, v := range group.Documents {
-		if err := exportDocument(path, v, toHtml...); err != nil {
-			return err
-		}
-	}
-	for _, child := range group.Children {
-		if err := export(path+"/"+child.Name, child); err != nil {
+	for _, doc := range group.Documents {
+		routers = append(routers, map[string]interface{}{
+			"link": fmt.Sprintf("./%s.html", doc.Name),
+			"name": doc.Name + ".html",
+		})
+		if err := exportDocument(path, doc, toHtml...); err != nil {
 			return err
 		}
 	}
 
+	for _, child := range group.Children {
+		var name = child.Name
+		if name == "" {
+			name = "default"
+		}
+		if err := export(path+"/"+name, child, toHtml...); err != nil {
+			return err
+		}
+		routers = append(routers, map[string]interface{}{
+			"link": fmt.Sprintf("./%s/index.html", name),
+			"name": name,
+		})
+	}
+
+	if len(toHtml) > 0 && toHtml[0] {
+		name := fmt.Sprintf("%s/index.html", path)
+		os.Remove(name)
+		indexFile, err := os.OpenFile(name, os.O_CREATE|os.O_RDWR, 0644)
+		if err != nil {
+			return err
+		}
+		defer indexFile.Close()
+		return index.Execute(indexFile, map[string]interface{}{"routers": routers})
+	}
 	return nil
 }
 
 func exportDocument(path string, doc *docer.Document, toHtml ...bool) error {
-	filename := fmt.Sprintf("%s/%s.md", path, doc.Name)
+	var filename string
+	if len(toHtml) > 0 && toHtml[0] {
+		filename = fmt.Sprintf("%s/%s.html", path, doc.Name)
+	} else {
+		filename = fmt.Sprintf("%s/%s.md", path, doc.Name)
+	}
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
