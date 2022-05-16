@@ -25,6 +25,14 @@ func (t tree) contain(name string) bool {
 	return false
 }
 
+func (t tree) skip(pkg, name string) bool {
+	if pkg == "time" && name == "Time" {
+		return true
+	}
+	//and so on...
+	return false
+}
+
 type decoder struct {
 	t tree
 }
@@ -70,14 +78,16 @@ func (d *decoder) decode(model interface{}) *Model {
 // 解析字段
 func (d *decoder) decodeField(t reflect.StructField, v reflect.Value) *Field {
 	var f = new(Field)
-	f.Name = t.Tag.Get("json")
+	f.Name = strings.Split(t.Tag.Get("json"), ",")[0]
 	f.SetName(t.Name)
 	decodeDocTag(f, t.Tag.Get("doc"))
 	rt, n := realType(v.Type(), 0)
 	switch rt.Kind() {
 	case reflect.Struct:
 		f.Type = rt.Name()
-		if !d.t.contain(rt.Name()) {
+		if d.t.skip(rt.PkgPath(), v.Type().Name()) {
+			f.Type = v.Type().Name()
+		} else if !d.t.contain(rt.Name()) {
 			f.Sub = newDecoder(d.t).decode(reflect.New(rt).Interface())
 		}
 	default:

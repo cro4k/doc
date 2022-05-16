@@ -41,7 +41,7 @@ func (m *Model) GetFields() []*Field {
 func (m *Model) exampleJSON(prefix string) string {
 	var fields []string
 	for _, field := range m.GetFields() {
-		var text = fmt.Sprintf("\"%s\": ", field.Name)
+		var text = fmt.Sprintf("\t\"%s\": ", field.Name)
 		switch strings.TrimLeft(field.Type, "[]") {
 		case "string":
 			text = text + "\"\""
@@ -49,6 +49,8 @@ func (m *Model) exampleJSON(prefix string) string {
 			text = text + "0"
 		case "bool":
 			text = text + "false"
+		case "Time":
+			text = text + "\"2006-01-02 15:04:05\""
 		default:
 			if field.Sub != nil {
 				text = text + field.Sub.exampleJSON(prefix+"\t")
@@ -66,7 +68,7 @@ func (m *Model) exampleJSON(prefix string) string {
 	if m.Array {
 		return "[\n" + strings.Join(fields, ",\n") + "\n]"
 	} else {
-		return "{\n" + strings.Join(fields, ",\n") + "\n}"
+		return "{\n" + strings.Join(fields, ",\n") + "\n" + prefix + "}"
 	}
 }
 
