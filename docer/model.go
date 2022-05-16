@@ -31,9 +31,16 @@ type Example struct {
 	Type uint8 `doc:"required;this is field comment;option:1,2,3"`
 }
 
+func (m *Model) GetFields() []*Field {
+	if m == nil {
+		return nil
+	}
+	return m.Fields
+}
+
 func (m *Model) exampleJSON(prefix string) string {
 	var fields []string
-	for _, field := range m.Fields {
+	for _, field := range m.GetFields() {
 		var text = fmt.Sprintf("\"%s\": ", field.Name)
 		switch strings.TrimLeft(field.Type, "[]") {
 		case "string":

@@ -21,7 +21,7 @@ func expand(models map[string]*docer.Model, m *docer.Model) {
 		return
 	}
 	models[m.Name] = m
-	for _, v := range m.Fields {
+	for _, v := range m.GetFields() {
 		if v.Sub != nil {
 			expand(models, v.Sub)
 		}
@@ -34,11 +34,11 @@ func Markdown(w io.Writer, doc *docer.Document) error {
 	data := Data{Document: *doc}
 	data.Models = make(map[string]*docer.Model)
 
-	for _, field := range data.Req.Fields {
+	for _, field := range data.Req.GetFields() {
 		expand(data.Models, field.Sub)
 	}
 
-	for _, field := range data.Rsp.Fields {
+	for _, field := range data.Rsp.GetFields() {
 		expand(data.Models, field.Sub)
 	}
 
