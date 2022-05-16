@@ -74,6 +74,6 @@ func TestPostman(t *testing.T) {
 		Root: true,
 	}
 	f, _ := os.OpenFile("a.json", os.O_CREATE|os.O_RDWR, 0644)
-	ExportPostman(f, doc)
+	Postman(f, doc)
 	f.Close()
 }

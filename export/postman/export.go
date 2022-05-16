@@ -8,19 +8,13 @@ import (
 	"github.com/cro4k/doc/export/markdown"
 	"github.com/google/uuid"
 	"io"
+	"os"
 	"strings"
 )
 
-func ExportPostman(w io.Writer, doc *docer.DocumentGroup) error {
-	//var items []*Item
-	//for _, v := range doc.Children {
-	//	item := new(Item)
-	//	buildGroup(item, v)
-	//	items = append(items, item)
-	//}
+func Postman(w io.Writer, doc *docer.DocumentGroup) error {
 	item := &Item{}
 	buildGroup(item, doc)
-
 	data := Document{
 		Info: Info{
 			PostmanID: uuid.New().String(),
@@ -30,6 +24,15 @@ func ExportPostman(w io.Writer, doc *docer.DocumentGroup) error {
 		Item: item.Item,
 	}
 	return json.NewEncoder(w).Encode(data)
+}
+
+func Export(filename string, doc *docer.DocumentGroup) error {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return Postman(file, doc)
 }
 
 func buildGroup(parent *Item, doc *docer.DocumentGroup) {
