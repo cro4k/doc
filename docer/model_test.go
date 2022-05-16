@@ -27,3 +27,20 @@ func TestModelExampleJSON(t *testing.T) {
 	}
 	t.Log("\n" + m.exampleJSON(""))
 }
+
+type ExampleRequest2 struct {
+	ExampleRequest
+	Hello struct {
+		World string `json:"world"`
+	} `json:"hello"`
+}
+
+func TestDecode(t *testing.T) {
+	m := newDecoder(tree{}).decode(&ExampleRequest2{})
+
+	for _, f := range m.Fields {
+		t.Log(f.Name, f.Type)
+	}
+
+	t.Log(m.ExampleJSON())
+}

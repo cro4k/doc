@@ -22,9 +22,10 @@ func (f *Field) SetName(name string) {
 }
 
 type Model struct {
-	Name   string   `json:"name"`
-	Fields []*Field `json:"fields"`
-	Array  bool     `json:"array"`
+	Name      string   `json:"name"`
+	Fields    []*Field `json:"fields"`
+	Array     bool     `json:"array"`
+	anonymous bool
 }
 
 type Example struct {

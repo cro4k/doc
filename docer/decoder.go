@@ -68,7 +68,12 @@ func (d *decoder) decode(model interface{}) *Model {
 			if t.Field(i).Tag.Get("doc") == "-" {
 				continue
 			}
-			m.Fields = append(m.Fields, d.decodeField(t.Field(i), v.Field(i)))
+			field := d.decodeField(t.Field(i), v.Field(i))
+			if field.Sub != nil && field.Sub.anonymous {
+				m.Fields = append(m.Fields, field.Sub.Fields...)
+			} else {
+				m.Fields = append(m.Fields, field)
+			}
 		}
 	default:
 	}
@@ -89,6 +94,7 @@ func (d *decoder) decodeField(t reflect.StructField, v reflect.Value) *Field {
 			f.Type = v.Type().Name()
 		} else if !d.t.contain(rt.Name()) {
 			f.Sub = newDecoder(d.t).decode(reflect.New(rt).Interface())
+			f.Sub.anonymous = t.Anonymous
 		}
 	default:
 		f.Type = rt.Name()
