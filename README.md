@@ -54,3 +54,5 @@ func main() {
 - 自动提取api地址
 - 自动解析请求响应参数
 - 只需要封装Handler方法，尽量降低代码侵入
+- 支持导出 markdown 或 html 格式(TODO: 样式优化)
+- 支持导出 postman 格式文档，导出为 json 文件后，可直接导入 postman，查看[详情](https://github.com/cro4k/doc/blob/master/export/postman/postman_test.go)
