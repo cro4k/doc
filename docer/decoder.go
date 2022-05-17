@@ -96,6 +96,10 @@ func (d *decoder) decodeField(t reflect.StructField, v reflect.Value) *Field {
 			f.Sub = newDecoder(d.t).decode(reflect.New(rt).Interface())
 			f.Sub.anonymous = t.Anonymous
 		}
+	//case reflect.Map:
+	//TODO
+	case reflect.Bool, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr, reflect.Float32, reflect.Float64, reflect.String:
+		f.Type = rt.Kind().String()
 	default:
 		f.Type = rt.Name()
 	}

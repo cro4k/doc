@@ -44,8 +44,7 @@ func (e *RouterGroup) Use(h ...gin.HandlerFunc) *RouterGroup {
 }
 
 func (e *RouterGroup) Handle(method string, path string, handler *Doc, middle ...gin.HandlerFunc) *RouterGroup {
-	handlers := []gin.HandlerFunc{handler.Handler}
-	handlers = append(handlers, middle...)
+	handlers := append(middle, handler.Handler)
 	e.e.Handle(method, path, handlers...)
 	handler.SetAPI(e.path(path))
 	handler.SetMethod(method)
@@ -54,8 +53,7 @@ func (e *RouterGroup) Handle(method string, path string, handler *Doc, middle ..
 }
 
 func (e *RouterGroup) Any(path string, handler *Doc, middle ...gin.HandlerFunc) *RouterGroup {
-	handlers := []gin.HandlerFunc{handler.Handler}
-	handlers = append(handlers, middle...)
+	handlers := append(middle, handler.Handler)
 	e.e.Any(path, handlers...)
 	handler.SetAPI(e.path(path))
 	e.m.add(handler)

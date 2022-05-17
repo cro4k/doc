@@ -29,10 +29,7 @@ func TestModelExampleJSON(t *testing.T) {
 }
 
 type ExampleRequest2 struct {
-	ExampleRequest
-	Hello struct {
-		World string `json:"world"`
-	} `json:"hello"`
+	Value map[string]interface{}
 }
 
 func TestDecode(t *testing.T) {
