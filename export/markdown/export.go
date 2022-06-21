@@ -101,6 +101,7 @@ func export(path string, group *docer.DocumentGroup, toHtml ...bool) error {
 		if name == "" {
 			name = "default"
 		}
+		os.MkdirAll(path+"/"+name, 0777)
 		if err := export(path+"/"+name, child, toHtml...); err != nil {
 			return err
 		}
