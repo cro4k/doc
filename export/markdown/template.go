@@ -4,7 +4,7 @@ import "text/template"
 
 var markdownTemplate = "## {{.Name}}\n\n" +
 	"### 请求地址\n" +
-	"> {{.API}}\n\n" +
+	"> {{.Path}}\n\n" +
 	"### 请求方式\n" +
 	"> {{.Method}}\n\n" +
 	"### 请求参数\n" +
