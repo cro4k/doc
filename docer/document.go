@@ -5,14 +5,15 @@ import (
 )
 
 type Document struct {
-	Path   string
-	Name   string
-	Method string
-	Req    *Model
-	Rsp    *Model
-	Group  string
-	Header KV
-	Extra  KV
+	Path    string
+	Name    string
+	Comment string
+	Method  string
+	Req     *Model
+	Rsp     *Model
+	Group   string
+	Header  KV
+	Extra   KV
 }
 
 type Documents []*Document

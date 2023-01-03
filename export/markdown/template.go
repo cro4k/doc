@@ -3,6 +3,7 @@ package markdown
 import "text/template"
 
 var markdownTemplate = "## {{.Name}}\n\n" +
+	"<p>{{.Comment}}</p>" +
 	"### 请求地址\n" +
 	"> {{.Path}}\n\n" +
 	"### 请求方式\n" +

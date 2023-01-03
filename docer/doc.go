@@ -56,14 +56,15 @@ func (m *Manager) Decode() Documents {
 			}
 		}
 		doc := &Document{
-			Path:   v.Path,
-			Name:   v.Name,
-			Method: v.Method,
-			Header: v.Header,
-			Extra:  v.Extra,
-			Req:    newDecoder(tree{}).decode(v.Req),
-			Rsp:    newDecoder(tree{}).decode(v.Rsp),
-			Group:  v.Group,
+			Path:    v.Path,
+			Name:    v.Name,
+			Comment: v.Comment,
+			Method:  v.Method,
+			Header:  v.Header,
+			Extra:   v.Extra,
+			Req:     newDecoder(tree{}).decode(v.Req),
+			Rsp:     newDecoder(tree{}).decode(v.Rsp),
+			Group:   v.Group,
 		}
 		documents = append(documents, doc)
 	}
